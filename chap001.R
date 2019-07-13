@@ -34,10 +34,65 @@ iris1 <- transform(
   dek=Sepal.Length/Sepal.Width,
   pek=Sepal.Length+Sepal.Width
 )
-iris1 <- transform(
+
+head(iris1)
+
+iris1 <- mutate(
   iris1,
-x=dek * pek
+  dek=Sepal.Length/Sepal.Width,
+  pek=Sepal.Length+Sepal.Width,
+  jek=sqrt(dek)
 )
 head(iris1)
+
+mydata <- data.frame(
+  Name = sample(LETTERS[1:20]),
+  old = runif(20,5,65) %>% round(0)
+)
+
+mydata <- within(mydata,{
+  agecat <- NA
+  agecat[old > 55] <- "Elder"
+  agecat[old >= 35 & old <= 55] <- "Middle Aged"
+  agecat[old < 35] <- "Young"
+})
+
+
+mydata$old_n <- ifelse(
+  mydata$old >55, "Elder",
+  ifelse(
+    mydata$old >=35 & mydata$old <= 55,"Middle Aged", "Young"
+  )
+)
+
+aggregate(Sepal.Length ~ Species, iris1, mean)
+
+aggregate(Sepal.Length ~ Species, iris1, sum)
+
+iris1 %>%
+  group_by (Species) %>%
+  summarize(
+    means = mean(Sepal.Length),
+    sums = sum(Sepal.Length)
+  )
+
+tapply(iris1$Sepal.Length,iris1$Species,mean)
+
+library(plyr)
+
+ddply(
+  iris1,
+  .(Species),
+  summarize,
+  means = mean(Sepal.Length),
+  sums = sum(Sepal.Length)
+)
+
+
+
+
+
+
+
 
 
