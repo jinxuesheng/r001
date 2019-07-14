@@ -89,6 +89,70 @@ ddply(
 )
 
 
+###1.4 数据合并、联结与长度转换
+
+data1 <- data.frame(
+  name1 = c("A","B","C","D"),
+  value = c(34,65,43,76)
+)
+
+data2 <- data.frame(
+  name1 = c("E","F","G","H"),
+  value = c(34,21,78,65)
+)
+
+#数据纵向合并
+rbind(data1,data2)
+dplyr::bind_rows(data1,data2)
+
+
+#数据横向合并
+cbind(data1,data2)
+dplyr::bind_cols(data1,data2)
+
+#1.4.2 数据联结
+tableA <- data.frame(
+  id = c(1,2,4),
+  name = c("t1","t2","t4")
+)
+
+
+tableB <- data.frame(
+  id = c(1,2,3),
+  age = c(18,20,19)
+)
+
+merge(tableA,tableB,by = "id", all = FALSE) #内连接
+merge(tableA,tableB,by = "id", all = TRUE) #外连接
+merge(tableA,tableB,by = "id", all.x = TRUE) #左连接
+merge(tableA,tableB,by = "id", all.y = TRUE) #右连接
+
+
+library("dplyr")
+
+inner_join(tableA,tableB,by = "id")#内连接
+left_join(tableA,tableB,by = "id")#左连接
+right_join(tableA,tableB,by = "id")#右连接
+full_join(tableA,tableB,by = "id")#全连接
+
+tableC <- data.frame(
+  id = c(1,2,4,5),
+  name = c("t1","t2","t4","t5")
+)
+
+tableD <- data.frame(
+  name = c("t1","t2","t4","t4"),
+  age = c(23,54,32,12)
+)
+
+semi_join(tableC,tableD,by = "name")
+anti_join(tableC,tableD,by = "name")
+
+#向量的交并补集运算
+
+intersect(1:10,6:15) #交集
+union(1:10,6:15)     #并集
+setdiff(1:10,6:15)   #差集
 
 
 
