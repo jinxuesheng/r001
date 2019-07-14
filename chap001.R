@@ -154,9 +154,53 @@ intersect(1:10,6:15) #交集
 union(1:10,6:15)     #并集
 setdiff(1:10,6:15)   #差集
 
+#1.4.2 数据长宽转换
+
+library("reshape2")
+library("tidyr")
+
+mydata <- data.frame(
+  Name = c("苹果","谷歌","脸书","亚马逊","腾讯"),
+  Company = c("Apple","Google","Facebook","Amazon","Tencent"),
+  Sales2013 = c(5000,3500,2300,2100,3100),
+  Sales2014 = c(5050,3800,2900,2100,3300),
+  Sales2015 = c(5050,3800,2900,2100,3300),
+  Sales2016 = c(5050,3800,2900,2100,3300)
+);mydata
+
+#宽转长，溶解
+mydata1 <- melt(
+  mydata,                           #数据集名称
+  id.vars = c("Company","Name"),    #保留的主字段
+  variable.name = "Year",           #转换后的分类字段名称（维度）
+  value.name = "Sales"              #转换后度量值名称
+);mydata1
+
+#长转宽
+dcast(
+  data = mydata1,                           #数据集名称
+  Name+Company ~ Year                       #x1+x2+...~class
+  #这行是转换表达式，
+  #左侧列出需要保留的主字段（不被拓宽）
+  #右侧是要分割的分类变量，扩展之后的宽数据会增加若干列度量值
+  #列数等于表达式右侧分类变量类别个数
+);mydata1
 
 
 
+#宽转长，gather
+mydata1 <- tidyr::gather(
+  data = mydata,                           #数据集名称
+  key = "Year",                            #转换后的分类字段名称（维度）
+  value = "Sales",                         #度量值名称
+  Sales2013:Sales2016                      #选择将要被拉长的字段组合
+);mydata1                                  #用x:y格式选择连续列、或-z格式排除主字段
 
+#长转宽，spread
+tidyr::spread(
+  data = mydata1,                           #数据框名称
+  key = Year,                               #待扩展的类别变量（编程新增列名称）
+  value = Sales                            #待扩展的度量值（编程新增列度量值）
+)
 
 
