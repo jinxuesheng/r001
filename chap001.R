@@ -203,4 +203,106 @@ tidyr::spread(
   value = Sales                            #待扩展的度量值（编程新增列度量值）
 )
 
+#1.5.1 字符串格式化
+
+#paste
+
+myword <- sample(LETTERS,10,replace = FALSE);myword
+
+paste(myword,collapse="-")
+paste0(myword,collapse="-")
+
+url <- "http://study.163.com/category/400000000146050#/?p="
+
+num <- 1:20
+
+myurl <-paste(url,num,sep="");myurl #遍历网页时，必须sep=""
+myurl <-paste(url,num);myurl #遍历网页时，默认加空格不是我们要的
+
+myurl <-paste0(url,num);myurl       #默认等效sep=""
+
+library("stringr")
+str_c(url,num,sep="") #用法与原生的paste相同
+
+#sprinf()
+
+#%d 整数    %02d   d代表正数；2代表长度；0代表不足补0
+#%f 浮点数  %4.2f  4代表总位数；2代表小数位数
+#%s 字符串
+#%% 百分比
+
+sprintf("%d%%",1:10)  #遍历百分比
+sprintf("%d-%d-%2d",2001,12,1:30)  #遍历日期
+sprintf("有%.1f%%的人评价变形金刚5较差",30.77)
+sprintf("%s是阿里巴巴的%s","马云","老板")
+
+#字符串高阶——如同Python一样控制字符串
+#包项目主页  https://github.com/Ironholds/pystr
+#可能需要 install.packages("devtools")
+devtools::install_github("nicolewhite/pystr")
+
+library("pystr")
+
+#顺序参数
+sprintf("Hello %s, my name is %s.","world","JXS")
+pystr_format("Hello {1}, my name is {2}.","world","JXS")
+pystr_format("Hello {2}, my name is {1}.","world","JXS")
+
+#1.5.2 字符串合并拆分
+
+myword <- c("fff-888","hh-333","ff-666","ccc-666")
+result <- strsplit(myword,"-")
+
+#初级方法
+mydata <- data.frame(
+  word = myword,
+  first = NA,
+  second = NA
+)
+
+for (i in 1:length(myword)){
+  mydata$first[i] <- result[i][1]
+  mydata$second[i] <- result[i][2]
+};mydata
+
+#高级方法
+#可能需要  install.packages("rlist")
+do.call(rbind,result) %>% cbind(myword,.) %>% data.frame %>% dplyr::rename(name = "V2",value ="V3")
+rlist::list.rbind(result) %>% cbind(myword,.) %>% data.frame %>% dplyr::rename(name = "V2",value ="V3")
+
+#在数据框中批量实现合并拆分字符串
+
+myyear <- sprintf("20%02d",sample(0:17,10))
+mymonth <- sprintf("%02d",sample(1:12,10))
+myday <- sprintf("%02d",sample(1:28,10))
+mydata <- data.frame(myyear,mymonth,myday)
+
+#合并
+library("tidyr")
+mydata1 <- unite(
+  mydata,
+  col="datetime",
+  c("myyear","mymonth","myday"),
+  sep="-",
+  remove=FALSE
+);mydata1
+
+separate(
+  data = mydata1,
+  col="datetime",
+  into= c("year1","month1","day1"),
+  remove=FALSE
+);mydata1
+
+
+#1.5.3 字符串替换、抽取与处理工具——正则表达式
+
+length() #字符串长度
+grep/grepl() #字符串筛选
+sub/gsub() #字符串替换
+regexpr/gregexpr() #返回字符串起始位置
+substr/substring() #字符串截取
+stringr::str_extract() #返回匹配值
+
+
 
