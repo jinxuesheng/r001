@@ -305,4 +305,91 @@ substr/substring() #字符串截取
 stringr::str_extract() #返回匹配值
 
 
+#1.6 管道函数与向量化函数
+
+#不使用管道函数的代码
+summarize(
+  group_by(iris,
+           Species),
+  means = mean(Sepal.Length),
+  sums = sum(Sepal.Length)
+)
+
+#使用管道函数优化后
+
+iris %>%
+  group_by(Species) %>%
+  summarize(
+    means = mean(Sepal.Length),
+    sums = sum(Sepal.Length)
+  )
+
+#管道函数传参的一般规则
+
+myword <- c("fff-888","hh-333","ff-666","ccc-666")
+result <- strsplit(myword,"-")
+do.call(rbind,result) %>% cbind(myword, .) %>% data.frame %>% dplyr::rename(name = "V2",value ="V3")
+
+#在数据抓取中管道函数更加神奇
+#install.packages("rvest")
+library("rvest")
+url <- "https://kongzhong.tmall.com/p/rd828551.htm"
+Name <- read_html(url, encoding = "GBK") %>%
+  html_nodes("b") %>%
+  html_text(trim = FALSE) %>%
+  gsub("(\\n\t|. |\\d|、)","", .) %>%
+  grep("\\s", .,value = T) %>%
+  str_trim(side = "both") %>%
+  .[1:54] %>%
+  .[setdiff(1:54,c(35,39))]
+
+Name
+
+#向量化函数
+
+#apply  按照维度计算
+
+matrix(runif(30,100,1000),nrow = 5) %>% apply(1,mean)  #按行处理
+matrix(runif(30,100,1000),nrow = 5) %>% apply(2,mean)  #按列处理
+
+#tapply
+
+tapply(iris$Sepal.Length,iris$Species,mean)
+class(tapply(iris$Sepal.Length,iris$Species,mean))
+
+#plyr::ddply
+library("plyr")
+plyr::ddply(
+  iris,
+  .(Species),    #分组
+  summarize,                 #summarize()函数参数可以在means、sums里逐个传给他
+  means=mean(Sepal.Length),
+  sums=sum(Sepal.Length)
+)
+
+#sapply/lapply
+
+sapply(1:3,function(x)x^2)
+lapply(1:3,function(x)x^2)
+lapply(1:3,function(x)x^2) %>% unlist
+
+#l_ply   仅仅执行任务，放弃输出结果的函数
+
+fun <- function(i) cat(sprintf("你好，%d号！",i),sep = "\n")
+l_ply(1:3,fun)
+(l_ply(1:3,fun)) #最外面括号的意思是，把里面代码的输出结果放出来，这里是NULL
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
