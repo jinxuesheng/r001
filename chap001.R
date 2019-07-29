@@ -381,12 +381,45 @@ l_ply(1:3,fun)
 
 
 
+#1.7 非结构数据处理 之 list/json
+
+library("jsonlite")
+library("magrittr")
+
+#jsonlite
+
+#fromJSON()
+
+info_json <- '{"p1":{"name":["Ken"],"age":[24],"interest":["reading","music","movies"],"lang":{"r":[2],"csharp":[4],"python":[3]}},"p2":{"name":["James"],"age":[25],"interest":["sports","music"],"lang":{"r":[3],"java":[2],"cpp":[5]}},"p3":{"name":["Penny"],"age":[24],"interest":["movies","reading"],"lang":{"r":[1],"cpp":[4],"python":[2]}}}'
+
+myjson_info <- info_json %>% fromJSON()
+cat(info_json)
 
 
+#toJSON()
 
+mylist <- list(
+  object1 = c("A","B","C","D","E"),
+  object2 = matrix(1:20,nrow = 4, byrow = FALSE),
+  object3 = array(1:27,dim =  c(3,3,3)),
+  object4 = data.frame(
+    name1 = c("A","B","C","D","E"),
+    name2 = c(21,34,56,54,32),
+    name3 = c(TRUE,FALSE,TRUE,FALSE,FALSE)
+  )
+)
 
+toJSON(mylist, auto_unbox = FALSE) %>% cat()
 
+#rlist
+library("rlist")
+#setwd("c:\...")
+#getwd()
 
+#list.load
+mylist <- list.load("mylist.json")
+
+list.save(mylist,"mylistnew.json")
 
 
 
