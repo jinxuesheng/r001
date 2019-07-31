@@ -422,7 +422,19 @@ mylist <- list.load("mylist.json")
 list.save(mylist,"mylistnew.json")
 
 
+#1.8 MYsql数据库连接
+#install.packages("RMySQL")
+library("RMySQL")
+library("dplyr")
 
+devtools::install_github("mongosoup/rmongodb")
+library("rmongodb")
+
+
+
+#1.9 高阶数据处理工具之 data.table
+
+library("data.table")
 
 
 
